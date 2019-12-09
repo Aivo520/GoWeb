@@ -23,33 +23,33 @@ http://localhost:9090/login
 4. 博客详情页面：包含博客内容，可以发表评论 
  
 #### 相关url 
-所有的url响应如下， 
-	mymux.HandleFunc("/register", Register1).Methods("GET"): 返回注册界面 
-	mymux.HandleFunc("/register/{username}-{password}-{email}-{phone}", Register2).Methods("POST"): 返回"YES"或"NO"代表是否注册成功 
-	mymux.HandleFunc("/login/{username}-{password}", Login2).Methods("POST"): 返回YES或NO代表是否登录成功 
-	mymux.HandleFunc("/login", Login1).Methods("GET"): 返回登录界面 
-	mymux.HandleFunc("/users/{username}-{password}", Userinfo).Methods("GET"): 返回用户主页 
-	mymux.HandleFunc("/articles/{username}", getAllarticles).Methods("GET"): 返回指定用户的所有博客 
-	mymux.HandleFunc("/critics/{Id}", getAllcritics).Methods("GET"): 返回指定博客的所有评论 
-	mymux.HandleFunc("/publish/{username}-{password}", CreateArticle).Methods("POST"): 返回"YES"或"NO"代表是否发布博客成功 
-	mymux.HandleFunc("/publish/critic", CreateCritic).Methods("POST"): 返回YES或NO代表是否发表评论成功 
-	mymux.HandleFunc("/detail/{Id}", GetArticle).Methods("GET"): 返回指定博客的内容 
-	mymux.HandleFunc("/tag/{tagcontent}", CreateTag).Methods("POST"): 返回YES或NO代表是否成功创建标签 
-	mymux.HandleFunc("/tag", GetTag).Methods("GET"): 返回标签 
+所有的url响应如下，     
+	mymux.HandleFunc("/register", Register1).Methods("GET"): 返回注册界面     
+	mymux.HandleFunc("/register/{username}-{password}-{email}-{phone}", Register2).Methods("POST"): 返回"YES"或"NO"代表是否注册成功    
+	mymux.HandleFunc("/login/{username}-{password}", Login2).Methods("POST"): 返回YES或NO代表是否登录成功    
+	mymux.HandleFunc("/login", Login1).Methods("GET"): 返回登录界面    
+	mymux.HandleFunc("/users/{username}-{password}", Userinfo).Methods("GET"): 返回用户主页    
+	mymux.HandleFunc("/articles/{username}", getAllarticles).Methods("GET"): 返回指定用户的所有博客    
+	mymux.HandleFunc("/critics/{Id}", getAllcritics).Methods("GET"): 返回指定博客的所有评论    
+	mymux.HandleFunc("/publish/{username}-{password}", CreateArticle).Methods("POST"): 返回"YES"或"NO"代表是否发布博客成功     
+	mymux.HandleFunc("/publish/critic", CreateCritic).Methods("POST"): 返回YES或NO代表是否发表评论成功    
+	mymux.HandleFunc("/detail/{Id}", GetArticle).Methods("GET"): 返回指定博客的内容     
+	mymux.HandleFunc("/tag/{tagcontent}", CreateTag).Methods("POST"): 返回YES或NO代表是否成功创建标签     
+	mymux.HandleFunc("/tag", GetTag).Methods("GET"): 返回标签    
      
 #### 数据库表 
-1. User表：用户个人信息 
-    Key: Username(唯一的用户名) 
-    Field: Username, Password,  Email, Phone 
-2. Article表：博客文章信息 
-    Key: Id(博客Id是唯一的) 
-    Field: Id, Title, Content, Author 
-3. Critic表： 
-    Key: C_id(评论的唯一ID) 
-    Field: C_id, Id, Content 
-4. MyTag表：文章标签信息 
-    Key: Tagname 
-    Field: Tagname 
+1. User表：用户个人信息    
+    Key: Username(唯一的用户名)    
+    Field: Username, Password,  Email, Phone    
+2. Article表：博客文章信息    
+    Key: Id(博客Id是唯一的)    
+    Field: Id, Title, Content, Author    
+3. Critic表：    
+    Key: C_id(评论的唯一ID)    
+    Field: C_id, Id, Content    
+4. MyTag表：文章标签信息    
+    Key: Tagname    
+    Field: Tagname    
  
 #### 界面展示 
 |            登录页面             |            注册页面             | 
