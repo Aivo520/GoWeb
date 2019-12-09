@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <style type="text/css">
+            body{
+                text-align: center
+            }
+        </style>
+        <script type="text/javascript" src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+        <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+        <script type="text/javascript">
+            var vm;
+            window.onload = function() {
+                var cnt = 0;
+                vm = new Vue({
+                    el:'#articles',
+                    data:{
+                        msg:'Hello World!',
+                    },
+                    methods: {
+                        getAllArticles: function() {
+                            id = document.getElementById("articleid").innerHTML;
+                            my_query = '/critics/' + id;
+                            this.$http.get(
+                                my_query
+                            ).then(function(res) {
+                                var ret = res.bodyText;
+                                console.log(res.bodyText)
+                                while (ret.indexOf("\n") != -1) {
+                                    var ij = ret.indexOf("\n") + 1;
+                                    var temp = ret.substr(0, ij)
+                                    ret = ret.substr(ij)
+                                    var obj = JSON.parse(temp);
+                                    addedArticle = "<li>"+obj.Content+"</li>";
+                                    document.getElementById("critics").innerHTML 
+                                        = document.getElementById("critics").innerHTML + addedArticle;
+                                }
+                            },
+                            function() {
+                                console.log('请求失败处理');
+                                document.getElementById("sign").innerHTML = "Error: failed to get all articles!";
+                            });
+                        }, 
+                        
+                        
+                        publish:function() {
+                            //发送get请求
+                            id = document.getElementById("articleid").innerHTML;
+                            content = document.getElementById("content").value;
+                            my_query = '/publish/' +  "critic";
+                            console.log(my_query)
+                            this.$http.post(
+                                my_query, {"Id" : id, "Content" : content}
+                            ).then(function(res) {
+                                if(res.bodyText == "YES") {
+                                    document.getElementById("sign").innerHTML = "Secceed in publishing!";
+                                }
+                                else {
+                                    document.getElementById("sign").innerHTML = "Failed to publish!";
+                                }
+                            },
+                            function() {
+                                console.log('请求失败处理');
+                                document.getElementById("sign").innerHTML = "Error: failed to publish!";
+                            });
+                        }
+                    }
+                });
+                vm.getAllArticles();
+            };
+            
+            function publishArticle() {
+                vm.publish();
+            }
+        </script>
+
+        <style type="text/css">
+            #articleid{
+                visibility: hidden;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <h1>#article_title</h1>
+        <p>#article_content</p>
+        <span id="articleid">#article_id</span>
+        <div id="func">
+            <textarea id="content" rows="30" cols="50">
+                请在此处输入你的评论...
+            </textarea><br/>
+            <button id="publish" onclick="publishArticle()">Publish</button>
+            <span id="sign"></span>
+            <br/><br/>
+            <p>Critics: </p>
+            <ul id="critics">
+            </ul>
+        </div>
+    </body>
+</html>

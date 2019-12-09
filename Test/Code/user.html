@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <script type="text/javascript" src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+        <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+        <script type="text/javascript">
+            var vm;
+            window.onload = function() {
+                var cnt = 0;
+                vm = new Vue({
+                    el:'#articles',
+                    data:{
+                        msg:'Hello World!',
+                    },
+                    methods: {
+                        getAllArticles: function() {
+                            var cnt = 0;
+                            //返回{cnt: xx, article_title: xxx}
+                            username = document.getElementById("username").innerHTML;
+                            my_query = '/articles/' + username;
+                            console.log(my_query)
+                            this.$http.get(
+                                my_query
+                            ).then(function(res) {
+                                var ret = res.bodyText;
+                                console.log(res.bodyText)
+                                while (ret.indexOf("}\n") != -1) {
+                                    var ij = ret.indexOf("}\n") + 1;
+                                    var temp = ret.substr(0, ij)
+                                    ret = ret.substr(ij)
+                                    var obj = JSON.parse(temp);
+                                    addedArticle = "<li><a href='http://localhost:9090/detail/" + obj.Id.charCodeAt(0) + "'>" + obj.Title + "</a></li>";
+                                    document.getElementById("articles").innerHTML 
+                                        = document.getElementById("articles").innerHTML + addedArticle;
+                                }
+                            },
+                            function() {
+                                console.log('请求失败处理');
+                                document.getElementById("sign").innerHTML = "Error: failed to get all articles!";
+                            });
+                        }, 
+                        
+                        getArticle: function(article_title) {
+                            my_query = '/detail/' + article_title;
+                            console.log(my_query)
+                            this.$http.get(
+                                my_query
+                            ).then(function(res) {
+                                console.log(res)
+                                var obj = JSON.parse(res.bodyText);
+                                var my_articles = "<h1>" + obj.Title + "</h1>\n<p>" + obj.Content + "</p>";
+                                document.write(my_articles);
+                            },
+                            function() {
+                                console.log('请求失败处理');
+                                document.getElementById("sign").innerHTML = "Error: failed to get articles!";
+                            });
+                        }, 
+
+                        GetTag:function(){
+                            this.$http.get(
+                                '/tag'
+                            ).then(function(res){
+
+                            },
+                            function(){
+
+                            });
+                        },
+
+                        CreateTag:function(){
+                            tagname = document.getElementById("taginput").value;
+                            console.log('/tag'+tagname);
+                            this.$http.post(
+                                '/tag/'+tagname
+                            ).then(function(res){
+                                if(res.bodyText == "NO"){
+                                    document.getElementById("sign2").innerHTML = "Error: failed to Create Tag!";
+                                }else{
+                                    document.getElementById("sign2").innerHTML = "Create Tag Successfully!";
+                                }
+                            })
+                        },
+                        
+                        GetTag:function(){
+                            this.$http.get(
+                                "/tag"
+                            ).then(function(res){
+                                document.getElementById("sign2").innerHTML = res.bodyText;
+                            })
+                        },
+
+                        publish:function() {
+                            console.log("GGG")
+                            //发送get请求
+                            content = document.getElementById("content").value;
+                            title = document.getElementById("title").value;
+                            username = document.getElementById("username").innerHTML;
+                            password = document.getElementById("password").value;
+                            my_query = '/publish/' + username + "-" + password;
+                            console.log(my_query)
+                            this.$http.post(
+                                my_query, {"Title" : title, "Content" : content}
+                            ).then(function(res) {
+                                if(res.bodyText == "YES") {
+                                    document.getElementById("sign").innerHTML = "Secceed in publishing!";
+                                }
+                                else {
+                                    document.getElementById("sign").innerHTML = "Failed to publish!";
+                                }
+                            },
+                            function() {
+                                console.log('请求失败处理');
+                                document.getElementById("sign").innerHTML = "Error: failed to publish!";
+                            });
+                        }
+                    }
+                });
+                vm.getAllArticles();
+            };
+
+            function GetTag(){
+                vm.GetTag();
+            }
+
+            function CreateTag(){
+                vm.CreateTag();
+            }
+            
+            function publishArticle() {
+                vm.publish();
+            }
+            function getArticle(ar_title) {
+                vm.getArticle(ar_title)
+            }
+        </script>
+
+        <style type="text/css">
+            body{
+                text-align: center
+            }
+            ul{
+                text-align: left
+            }
+            #title {
+                margin-bottom: 20px;
+                border-color: blanchedalmond;
+                border-width: thick;
+            }
+            #content {
+                border-color: beige;
+                border-width: 3px;
+                    
+            }
+            #password {
+                margin: 20px 20px 20px 20px;
+            }
+            #sign {
+                color: red;
+            }
+            .mintitle{
+                text-align: left;
+                font-size: 14px;
+            }
+            #signer {
+                font-size: 14px;
+            }
+            #publish {
+                background-color: chartreuse;
+                color: aliceblue;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <h1>博客主页</h1>
+        <div id="func">
+            <p class="mintitle">个人信息：</p>
+            <ul>
+              <li id="username">#name</li>
+              <li id="phone">#phone</li>
+              <li id="email">#email</li>
+            </ul>
+            <input type="text" id="title" name="title" value="请在此处输入标题...">
+            <br/>
+            <textarea id="content" rows="30" cols="50">请在此处输入你的博客内容...</textarea><br/>
+            <span id="signer">发表文章需输入密码:</span><input id="password" type="text" name="password" value=""><br/>
+            <button id="publish" onclick="publishArticle()">立即发布</button>
+            <span id="sign"></span>
+            <br/><br/>
+            <button id="seeTag" onclick="GetTag()">查看TAG</button>
+            <input type="text" id="taginput" name="taginput" value="请在此处输入TAG">
+            <button id="seeTag" onclick="CreateTag()">创建TAG</button>
+            <span id="sign2"></span>
+            <br/><br/>
+            <p><br/></p><br/>
+            <span id="sign3"></span>
+            <p class="mintitle">文章列表: </p>
+            <ul id="articles">
+            </ul>
+        </div>
+    </body>
+</html>

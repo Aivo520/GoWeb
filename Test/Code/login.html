@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <script type="text/javascript" src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+        <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+        <script type="text/javascript">
+            window.onload = function() {
+                var vm = new Vue({
+                    el:'#login',
+                    data:{
+                        msg:'Hello World!',
+                    },
+                    methods: {
+                        loginToken:function() {
+                            token = document.getElementById("token").innerHTML;
+                            console.log(token);
+                            if(token.length>0){
+                                my_query = '/login/' + token
+                                console.log(my_query)
+                                this.$http.post(my_query).then(function(res) {
+                                    if(res.bodyText == "YES") {
+                                        console.log("wewewewewewewwewewewewewew");
+                                        this.gotoUser();
+                                    }
+                                    else{
+                                        console.log("121211121212121121121");
+                                    }
+                                },
+                                function() {
+                                    console.log("token登录失败");
+                                });
+                            }
+                            else{
+                                console.log("09979797989898989");
+                            }
+                        }, 
+
+                        loginUser:function() {
+                            //发送get请求
+                            username = document.getElementsByName("username").item(0).value;
+                            password = document.getElementsByName("password").item(0).value;
+                            my_query = '/login/' + username + "-" + password;
+                            console.log(my_query)
+                            this.$http.post(my_query).then(function(res) {
+                                if(res.bodyText != "NO") {
+                                    console.log(res.bodyText);
+                                    document.getElementById("token").innerHTML 
+                                        = document.getElementById("token").innerHTML + res.bodyText;
+                                    console.log(document.getElementById("token").innerHTML);
+                                    this.gotoUser();
+                                }
+                                else {
+                                    document.getElementById("sign").innerHTML = "Failed to login!";
+                                }
+                            },
+                            function() {
+                                console.log('请求失败处理');
+                                document.getElementById("sign").innerHTML = "Error: failed to login!";
+                            });
+                        }, 
+                        
+                        gotoUser: function() {
+                            username = document.getElementsByName("username").item(0).value;
+                            password = document.getElementsByName("password").item(0).value;
+                            var jumper = "<a href='http://127.0.0.1:9090/users/" + username + "-" + password + "'>Click here to jump...</a>";
+                            console.log(jumper)
+                            document.write(jumper)
+                        }, 
+                        
+                    }
+                });
+                vm.loginToken();
+            };
+        </script>
+
+        <style type="text/css">
+            body{
+                text-align: center
+            }
+            input{
+                margin: 10px 10px 10px 10px
+            }
+            a {
+               margin-left: 20px 
+            }
+            #token{
+                visibility: hidden;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <h1>用户登录</h1>
+        <div>
+            <span id="token"></span>
+            Username: <input type="text" name="username"><br/>
+            Password: <input type="password" name="password"><br/>
+            <button id="login" @click="loginUser()">Submit</button><a href="http://127.0.0.1:9090/register">Register</a><br/>
+            <span id="sign"></span>
+            
+        </div>
+    </body>
+</html>

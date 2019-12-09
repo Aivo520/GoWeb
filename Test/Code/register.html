@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <script type="text/javascript" src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+        <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+        <script type="text/javascript">
+            window.onload = function() {
+                var vm = new Vue({
+                    el:'#register',
+                    data:{
+                        msg:'Hello World!',
+                    },
+                    methods:{
+                        registerUser:function() {
+                            //发送get请求
+                            username = document.getElementsByName("username").item(0).value;
+                            password = document.getElementsByName("password").item(0).value;
+                            email = document.getElementsByName("email").item(0).value;
+                            phone = document.getElementsByName("phone").item(0).value;
+                            my_query = '/register/' + username + "-" + password + "-" + email + "-" + phone;
+                            console.log(my_query)
+                            this.$http.post(my_query).then(function(res) {
+                                if(res.bodyText == "YES") {
+                                    document.getElementById("sign").innerHTML = "Secceed in registering!";
+                                }
+                                else {
+                                    document.getElementById("sign").innerHTML = "Failed to register!";
+                                }
+                            },
+                            function() {
+                                console.log('请求失败处理');
+                                document.getElementById("sign").innerHTML = "Error: failed to register!";
+                            });
+                        }
+                    }
+                });
+            };
+        </script>
+
+        <style type="text/css">
+            body{
+                text-align: center
+            }
+            input{
+                margin: 10px 10px 10px 10px
+            }
+            a{
+                margin-left: 20px;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <h1>用户注册</h1>
+        <div>
+            Username: <input type="text" name="username"><br/>
+            Password: <input type="password" name="password"><br/>
+            E-mail:&nbsp;&nbsp; <input type="text" name="email"><br/>
+            Phone:&nbsp;&nbsp;&nbsp; <input type="text" name="phone"><br/>
+            <button id="register" @click="registerUser()">Submit</button><a href="http://127.0.0.1:9090/login">Back to login</a><br/>
+            <span id="sign"></span>
+            
+        </div>
+    </body>
+</html>
